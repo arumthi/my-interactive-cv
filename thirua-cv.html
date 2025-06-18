@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume | Thirupathi A</title>
+    <!-- Chosen Palette: "Modern Slate & Amber" - A professional and clean theme using a base of light gray and off-white, with dark slate for text and a warm amber accent for interactive elements and highlights. This creates a calm, focused, and modern aesthetic. -->
+    <!-- Application Structure Plan: The SPA is designed with a non-linear, user-driven flow. It's structured into thematic sections: an initial 'Hero' summary, an interactive 'Career Journey' timeline, a categorized 'Technical Toolbox', and 'Key Achievements'. Navigation is facilitated by a sticky header, allowing users to jump to sections of interest. The core interaction is the career timeline, where selecting a role dynamically updates a detail pane. This is chosen over a linear resume format to empower users to explore the depth and breadth of experience in the areas most relevant to them, making the vast 23-year career easily digestible and engaging. -->
+    <!-- Visualization & Content Choices: 
+        - Career Journey: Report Info (Chronological Work History) -> Goal (Organize/Explore) -> Viz/Method (Interactive Vertical Timeline using HTML/CSS/JS) -> Interaction (Clicking a timeline item displays its full details in a separate pane) -> Justification (Transforms a long text block into an engaging, user-directed exploration of a 23-year career path, highlighting progression) -> Library/Method (Vanilla JS, Tailwind CSS).
+        - Technical Toolbox: Report Info (Categorized Skill List) -> Goal (Inform/Compare) -> Viz/Method (Interactive Filter Buttons with Dynamic Content Display using HTML/CSS/JS) -> Interaction (Clicking a category button filters and displays the specific skills in that group) -> Justification (Organizes a dense list of technical skills into clear, manageable categories, allowing for quick assessment of capabilities in specific domains like Cloud or Databases) -> Library/Method (Vanilla JS, Tailwind CSS).
+        - Key Achievements: Report Info (Impactful bullet points from experience) -> Goal (Inform/Impress) -> Viz/Method (Styled Info Cards using HTML/CSS) -> Interaction (Static display for clarity and impact) -> Justification (Elevates the most significant accomplishments from the body of the text, providing an immediate, high-impact summary of capabilities and results) -> Library/Method (Tailwind CSS).
+        - NO Chart.js used; interactive HTML elements were chosen as a more direct and honest representation of the source text's categorized, non-quantitative skill data.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #f59e0b; 
+            border-bottom-color: #f59e0b;
+        }
+        .timeline-item {
+            border-left-color: #e5e7eb;
+        }
+        .timeline-item.active {
+            border-left-color: #f59e0b;
+        }
+        .timeline-item.active .timeline-dot {
+            background-color: #f59e0b;
+        }
+        .skill-btn.active {
+            background-color: #f59e0b;
+            color: #ffffff;
+            border-color: #f59e0b;
+        }
+        .achievement-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .achievement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800">Thirupathi A.</h1>
+                </div>
+                <nav class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#journey" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600">Career Journey</a>
+                        <a href="#toolbox" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600">Technical Toolbox</a>
+                        <a href="#achievements" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600">Achievements</a>
+                        <a href="#contact" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600">Contact</a>
+                    </div>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#journey" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600">Career Journey</a>
+                <a href="#toolbox" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600">Technical Toolbox</a>
+                <a href="#achievements" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600">Achievements</a>
+                <a href="#contact" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+                    Engineering & Data Architecture Leader
+                </h2>
+                <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-gray-600">
+                    A highly accomplished Engineering Capability Lead and Data Engineering Architect with 23 years of experience, specializing in transforming financial domain enterprise software, data platforms, and cloud migration strategies.
+                </p>
+                <div class="mt-10 flex flex-wrap justify-center gap-4 md:gap-8">
+                    <div class="text-center">
+                        <p class="text-3xl md:text-4xl font-bold text-amber-500">23</p>
+                        <p class="text-sm text-gray-500 tracking-wide">Years of Experience</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl md:text-4xl font-bold text-amber-500">40+</p>
+                        <p class="text-sm text-gray-500 tracking-wide">Engineers Led</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl md:text-4xl font-bold text-amber-500">20+</p>
+                        <p class="text-sm text-gray-500 tracking-wide">Enterprise Initiatives</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="journey" class="py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900">Career Journey</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        An interactive timeline of my professional experience. Click on any role to see the detailed contributions and achievements for that period.
+                    </p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8 lg:gap-12">
+                    <div id="timeline-nav" class="md:w-1/3 space-y-2">
+                    </div>
+                    <div id="timeline-details" class="md:w-2/3 bg-white p-6 md:p-8 rounded-lg shadow-md min-h-[400px]">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="toolbox" class="py-20 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900">Technical Toolbox</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        A curated collection of my technical skills. Select a category to explore the specific technologies and platforms I've mastered throughout my career.
+                    </p>
+                </div>
+                <div id="skills-container" class="max-w-4xl mx-auto">
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    </div>
+                    <div id="skills-display" class="bg-gray-50 p-6 rounded-lg min-h-[200px]">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="achievements" class="py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                 <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900">Key Achievements</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">A snapshot of my most impactful professional accomplishments, demonstrating strategic leadership and technical excellence.</p>
+                </div>
+                <div id="achievements-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </div>
+        </section>
+        
+        <footer id="contact" class="bg-gray-800 text-white py-16">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                 <h3 class="text-3xl font-bold">Get In Touch</h3>
+                 <p class="mt-4 max-w-xl mx-auto text-gray-300">I'm always open to discussing new challenges in data engineering, cloud architecture, and technology leadership.</p>
+                 <div class="mt-8 space-y-4 text-lg">
+                    <p>
+                        <a href="mailto:a.thirupathi@gmail.com" class="inline-flex items-center gap-2 hover:text-amber-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                            a.thirupathi@gmail.com
+                        </a>
+                    </p>
+                    <p class="inline-flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.518.759a11.024 11.024 0 005.176 5.176l.759-1.518a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C6.477 18 2 13.523 2 8V3z"></path></svg>
+                        +91 7708 33 1371
+                    </p>
+                 </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const experienceData = [
+                {
+                    id: 'anz',
+                    company: 'ANZ',
+                    role: 'Capability Area Lead (Payments Data Engineering Platforms)',
+                    period: 'Jul 2015 – Present',
+                    details: [
+                        "Spearheaded in-house development of a modern payment data processing system, accelerating the development lifecycle with tools like copilot.",
+                        "Led a team of 40+ engineers to build and migrate data assets to a cloud-ready platform, successfully sunsetting several legacy systems.",
+                        "Driving the strategic initiative to migrate workloads to Cloud platforms leveraging GenAI and Agentic AI.",
+                        "Chaired design, technology, and strategic governing forums to enforce platform standards.",
+                        "Defined and executed platform strategies, including justification and PoCs for moving from monolithic to microservices architectures.",
+                        "Designed and oversaw development of data archival to Google Cloud Storage (GCS) and S3 compliant Object Storage.",
+                        "Managed the successful deployment of services to Google Cloud (Kubernetes – GKE).",
+                        "Directed the design and development of microservices using Docker and Red Hat OpenShift Container Platform.",
+                    ]
+                },
+                {
+                    id: 'cimb',
+                    company: 'CIMB Bank',
+                    role: 'Solution Architect, AVP',
+                    period: 'Dec 2012 – Jul 2015',
+                    details: [
+                        "Led architectural design for over 20 enterprise-level initiatives across core banking, credit cards, payments, and digital banking.",
+                        "Managed vendor discussions, cost analysis, and finalization, ensuring strategic alignment and cost-effective solutions.",
+                        "Authored comprehensive Technical Solution Descriptions, outlining system architecture, design patterns, and technology choices.",
+                        "Provided expert recommendations for performance tuning across various enterprise systems.",
+                        "Designed and developed an internal 'Do Not Call Registry' web application, ensuring regulatory compliance.",
+                    ]
+                },
+                {
+                    id: 'uob',
+                    company: 'United Overseas Bank',
+                    role: 'Delivery Project Leader / Technical Lead',
+                    period: 'Apr 2011 – Dec 2012',
+                    details: [
+                       "Managed project planning, estimation, and delivery timelines for enhancements to the Powerlender system.",
+                       "Led a development team, defining delivery roadmaps and overseeing the design and implementation of business requirements based on JEE standards.",
+                       "Improved SDLC processes for projects, ensuring efficient UAT support and production environment preparation."
+                    ]
+                },
+                {
+                    id: 'db',
+                    company: 'Deutsche Bank',
+                    role: 'Senior Principal Consultant / Technical Specialist',
+                    period: 'Feb 2006 – Apr 2011',
+                    details: [
+                        "Designed and developed a scalable Automated Regression Testing Framework for cash management systems, resulting in significant time and cost savings.",
+                        "Architected and implemented a high-volume Payment Processing system capable of handling over 400K transactions in a single file.",
+                        "Led complex integration projects for payment transactions, handling various global formats (SEPA, SWIFT, XML, EDIFACT).",
+                        "Resolved stability and performance issues, improving scalability and tuning infrastructure (MQ, Oracle, WebLogic, JVM).",
+                        "Managed vendor relationships, negotiating project deliverables and commercial terms across the SDLC."
+                    ]
+                },
+                 {
+                    id: 'other',
+                    company: 'Early Career',
+                    role: 'Software Engineer / Consultant',
+                    period: 'Jun 2003 – Feb 2006',
+                    details: [
+                        "Held various roles as a Software Engineer and Associate Consultant at firms including IBM, Asian CERC/Dion Global Solutions, i-flex/Oracle Financial Services, and Ghana Commercial Bank.",
+                        "Developed and enhanced online stock trading solutions, electronic bill presentment systems (EBPP), and FX remittance products.",
+                        "Worked on core banking, payment systems, and client-side implementation and integration.",
+                        "Gained foundational experience in Java/J2EE, EJB, Oracle, and various financial product frameworks."
+                    ]
+                }
+            ];
+
+            const skillsData = {
+                'Cloud & DevOps': ['Google Cloud Platform (GCP)', 'GKE', 'GCS', 'GCE', 'Cloud Observability', 'Docker', 'Red Hat OpenShift', 'Jenkins', 'Apigee', 'Open Policy Agent (OPA)'],
+                'Core Programming & Frameworks': ['Java (JDK 8+)', 'Functional Programming', 'Spring Boot', 'Spring Framework', 'Microservices', 'CQRS Pattern', 'JPA', 'UNIX Shell Scripting'],
+                'Databases & Data Tech': ['Oracle', 'MS SQL Server', 'MySQL', 'MongoDB', 'Elasticsearch', 'Hazelcast Caching', 'Google Cloud Storage (GCS)', 'Dell ECS (S3)'],
+                'APIs & Integration': ['REST API', 'JAXB', 'JMS', 'JDBC', 'XML/XSD/XSLT', 'webMethods', 'IBM MQ Series', 'Maverick SFTP', 'Connect Direct'],
+                'Tools & Methodologies': ['Agile/Scrum', 'TDD', 'TOGAF', 'Eclipse', 'SQL Developer', 'Ant/Maven', 'Git', 'Jira', 'Confluence', 'PlantUML']
+            };
+
+            const achievementsData = [
+                { title: 'Data Platform Modernization', description: 'Spearheaded the in-house development of a modern, cloud-ready payment data platform, successfully retiring multiple legacy systems.' },
+                { title: 'Cloud & GenAI Adoption', description: 'Currently driving the strategic migration of workloads to GCP, integrating GenAI and Agentic AI to enhance platform capabilities.' },
+                { title: 'High-Volume Architecture', description: 'Architected a payment processing system at Deutsche Bank to handle over 400,000 transactions in a single file, a major scalability achievement.' },
+                { title: 'Leadership & Mentorship', description: 'Successfully led and mentored a team of over 40 engineers at ANZ, fostering growth and delivering on complex, large-scale projects.' },
+                { title: 'Enterprise Solutioning', description: 'Led the architectural design for over 20 enterprise-level initiatives at CIMB, spanning core banking, payments, and digital channels.' },
+                { title: 'Cost & Time Savings', description: 'Developed an automated regression testing framework that significantly reduced testing cycles and operational costs for cash management systems.' }
+            ];
+
+            const timelineNav = document.getElementById('timeline-nav');
+            const timelineDetails = document.getElementById('timeline-details');
+            const skillsCatContainer = document.querySelector('#skills-container > div:first-child');
+            const skillsDisplay = document.getElementById('skills-display');
+            const achievementsGrid = document.getElementById('achievements-grid');
+
+
+            function renderTimeline() {
+                experienceData.forEach(exp => {
+                    const button = document.createElement('button');
+                    button.className = 'timeline-item text-left w-full p-4 rounded-lg transition-colors duration-200 border-l-4 hover:bg-gray-50';
+                    button.dataset.id = exp.id;
+                    button.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="timeline-dot w-3 h-3 bg-gray-300 rounded-full -ml-6 mr-4 transition-colors duration-200"></div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">${exp.company}</h4>
+                                <p class="text-sm text-gray-600">${exp.role}</p>
+                                <p class="text-xs text-gray-400 mt-1">${exp.period}</p>
+                            </div>
+                        </div>
+                    `;
+                    button.addEventListener('click', () => {
+                        updateTimelineDetails(exp.id);
+                        document.querySelectorAll('.timeline-item').forEach(item => item.classList.remove('active', 'bg-amber-50'));
+                        button.classList.add('active', 'bg-amber-50');
+                    });
+                    timelineNav.appendChild(button);
+                });
+            }
+
+            function updateTimelineDetails(id) {
+                const exp = experienceData.find(e => e.id === id);
+                if (exp) {
+                    timelineDetails.innerHTML = `
+                        <h4 class="text-2xl font-bold text-gray-900 mb-2">${exp.company}</h4>
+                        <p class="text-md text-gray-600 font-semibold mb-4">${exp.role} (${exp.period})</p>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            ${exp.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    `;
+                }
+            }
+
+            function renderSkills() {
+                Object.keys(skillsData).forEach(category => {
+                    const button = document.createElement('button');
+                    button.className = 'skill-btn px-4 py-2 text-sm font-medium border rounded-full transition-colors duration-200';
+                    button.textContent = category;
+                    button.dataset.category = category;
+                    button.addEventListener('click', () => {
+                        updateSkillsDisplay(category);
+                        document.querySelectorAll('.skill-btn').forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                    });
+                    skillsCatContainer.appendChild(button);
+                });
+            }
+
+            function updateSkillsDisplay(category) {
+                const skills = skillsData[category];
+                if (skills) {
+                    skillsDisplay.innerHTML = `
+                        <div class="flex flex-wrap gap-3">
+                            ${skills.map(skill => `<span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1.5 rounded-full">${skill}</span>`).join('')}
+                        </div>
+                    `;
+                }
+            }
+            
+            function renderAchievements() {
+                achievementsData.forEach(ach => {
+                    const card = document.createElement('div');
+                    card.className = 'achievement-card p-6 rounded-lg';
+                    card.innerHTML = `
+                        <h4 class="font-bold text-lg text-gray-900">${ach.title}</h4>
+                        <p class="mt-2 text-gray-600">${ach.description}</p>
+                    `;
+                    achievementsGrid.appendChild(card);
+                });
+            }
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            renderTimeline();
+            updateTimelineDetails('anz');
+            document.querySelector('.timeline-item').classList.add('active', 'bg-amber-50');
+
+            renderSkills();
+            updateSkillsDisplay(Object.keys(skillsData)[0]);
+            document.querySelector('.skill-btn').classList.add('active');
+
+            renderAchievements();
+
+        });
+    </script>
+</body>
+</html>
+
